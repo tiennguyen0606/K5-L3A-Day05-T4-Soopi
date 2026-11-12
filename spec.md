@@ -1,5 +1,15 @@
 # Bài nộp LAB5 — [Track] · Nhóm [tên]
 [Danh sách thành viên và việc mỗi người làm — copy bảng từ README]
+- Lớp: 3A - H210
+- Bàn/Zone: 
+- Track: T4 - Thương mại điện tử
+
+
+| Họ và tên| Mã Học Viên| Việc đã làm|
+|---|---|---|
+|Mai Tuấn Anh|2A202603574||
+|Nguyễn Hữu Tiến|2A202603598||
+
 
 ## §1. Lát cắt & phạm vi
 - Lát cắt (chép từ track): Trong Trò chuyện với Shopee, khi người mua đang báo "hàng nhận không đúng mô tả", AI tự hướng dẫn gửi yêu cầu trả hàng hoàn tiền, xin thêm bằng chứng, hay chuyển nhân viên, để người mua biết đúng bước tiếp theo, và người bán không bị xử thua khi họ đúng.
