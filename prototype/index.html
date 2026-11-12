@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prototype · T4 — Trợ lý khiếu nại "hàng không đúng mô tả" · Nhóm Soopi</title>
+<style>
+:root {
+  --shopee: #ee4d2d;
+  --shopee-hover: #d94425;
+  --ink: #212121;
+  --text: #424242;
+  --secondary: #616161;
+  --hint: #757575;
+  --muted: #9e9e9e;
+  --border: #e0e0e0;
+  --divider: #f0f0f0;
+  --bg: #f5f5f5;
+  --white: #fff;
+  --green: #2e7d32;
+  --amber: #e65100;
+  --amber-bg: #fff3e0;
+  --red: #c62828;
+  --blue: #1565c0;
+  --font: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font);
+  background: #fafafa;
+  color: var(--ink);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 16px;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Header ── */
+.hdr { max-width: 920px; width: 100%; margin-bottom: 16px; }
+.hdr h1 { font-size: 16px; font-weight: 600; }
+.hdr .sub { font-size: 12px; color: var(--hint); margin-top: 2px; }
+.bar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.tabs { display: flex; }
+.tabs button {
+  border: 1px solid var(--border); background: var(--white);
+  padding: 7px 18px; font: inherit; font-size: 13px;
+  color: var(--secondary); cursor: pointer; transition: all .15s;
+}
+.tabs button:first-child { border-radius: 4px 0 0 4px; }
+.tabs button:last-child { border-radius: 0 4px 4px 0; margin-left: -1px; }
+.tabs button.on { border-color: var(--shopee); color: var(--shopee); font-weight: 600; z-index: 1; position: relative; }
+.tabs button:hover:not(.on) { background: #fafafa; }
+.tog { font-size: 13px; color: var(--secondary); cursor: pointer; display: flex; align-items: center; gap: 6px; user-select: none; }
+.tog input { accent-color: var(--shopee); width: 14px; height: 14px; }
+
+/* ── Screens ── */
+.scr { display: none; max-width: 920px; width: 100%; }
+.scr.on { display: block; }
+
+/* ══════════════════════════════════
+   SCREEN 1 — BUYER CHAT
+   ══════════════════════════════════ */
+.phone {
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 6px; overflow: hidden; max-width: 400px; margin: 0 auto;
+}
+.p-bar { background: var(--shopee); color: #fff; font-size: 10.5px; padding: 4px 14px; display: flex; justify-content: space-between; }
+.p-bar b { font-weight: 600; }
+.c-hdr {
+  background: var(--shopee); color: #fff; padding: 10px 14px;
+  display: flex; align-items: center; gap: 10px;
+}
+.c-hdr .bk { font-size: 18px; opacity: .6; }
+.c-hdr .av {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: rgba(255,255,255,.2); display: flex;
+  align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; flex-shrink: 0;
+}
+.c-hdr .nm { font-size: 14px; font-weight: 600; }
+.c-hdr .st { font-size: 11px; opacity: .75; }
+
+.c-body {
+  background: var(--bg); padding: 10px;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.c-body::-webkit-scrollbar { width: 3px; }
+.c-body::-webkit-scrollbar-thumb { background: #ccc; border-radius: 3px; }
+
+.sys { text-align: center; font-size: 11px; color: var(--muted); padding: 2px 0; }
+.sys em { background: #eee; color: var(--secondary); border-radius: 3px; padding: 1px 8px; font-size: 10.5px; font-style: normal; }
+
+/* bubbles */
+.row { display: flex; gap: 6px; max-width: 88%; position: relative; }
+.row.u { align-self: flex-end; flex-direction: row-reverse; }
+.row.a { align-self: flex-start; }
+.row .av {
+  width: 24px; height: 24px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: #fff; margin-top: 2px;
+}
+.row.a .av { background: var(--shopee); }
+.row.u .av { background: #bdbdbd; }
+
+.bbl {
+  padding: 9px 12px; font-size: 13.5px; line-height: 1.6;
+  position: relative; word-break: break-word;
+}
+.row.u .bbl { background: var(--shopee); color: #fff; border-radius: 6px 6px 2px 6px; }
+.row.a .bbl { background: var(--white); border: 1px solid var(--border); border-radius: 6px 6px 6px 2px; color: var(--ink); }
+.tag { font-size: 10.5px; color: var(--hint); font-weight: 600; margin-bottom: 3px; display: flex; align-items: center; gap: 4px; }
+.tag .lb { background: #eee; color: var(--hint); font-size: 9.5px; padding: 0 5px; border-radius: 2px; font-weight: 700; }
+.ts { font-size: 10px; color: var(--muted); margin-top: 4px; text-align: right; }
+.row.u .ts { color: rgba(255,255,255,.55); }
+
+/* confidence */
+.conf {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; font-weight: 600; padding: 2px 8px;
+  border-radius: 3px; margin-top: 6px;
+  background: var(--amber-bg); color: var(--amber);
+}
+
+/* evidence sections */
+.ev-section {
+  margin-top: 8px; padding: 7px 9px;
+  border: 1px solid var(--border); border-radius: 4px;
+  background: var(--white); font-size: 12.5px; color: var(--secondary);
+}
+.ev-section .ev-hdr {
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: .3px; color: var(--hint); margin-bottom: 4px;
+}
+.ev-section .ev-hdr.missing { color: var(--amber); }
+.ev-item { display: flex; gap: 6px; padding: 2px 0; align-items: flex-start; line-height: 1.5; }
+.ev-item .dot { margin-top: 6px; width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+.ev-item .dot.ok { background: var(--green); }
+.ev-item .dot.no { background: var(--amber); }
+
+/* status transfer notice */
+.transfer-notice {
+  margin-top: 8px; padding: 7px 9px; border-radius: 4px;
+  font-size: 12.5px; background: #e3f2fd; border: 1px solid #90caf9;
+  color: #1565c0; display: flex; align-items: flex-start; gap: 6px;
+  line-height: 1.5; position: relative;
+}
+
+/* action btns */
+.acts { display: flex; flex-direction: column; gap: 4px; margin-top: 8px; }
+.acts button {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 10px; border: 1px solid var(--border);
+  border-radius: 4px; background: var(--white);
+  font: inherit; font-size: 13px; cursor: pointer;
+  text-align: left; color: var(--text); transition: border-color .15s;
+  position: relative;
+}
+.acts button:hover { border-color: var(--shopee); }
+.acts button .ic { width: 18px; text-align: center; flex-shrink: 0; font-size: 13px; color: var(--secondary); }
+.acts button .la { flex: 1; }
+.acts button .ar { color: var(--muted); font-size: 11px; }
+.acts button.pri { border-color: var(--shopee); color: var(--shopee); }
+
+/* input bar */
+.ibar {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 10px; background: var(--white); border-top: 1px solid var(--border);
+}
+.ibar input {
+  flex: 1; border: 1px solid var(--border); border-radius: 4px;
+  padding: 8px 12px; font: inherit; font-size: 13px; outline: none;
+}
+.ibar input:focus { border-color: var(--shopee); }
+.ibar .snd {
+  width: 32px; height: 32px; border-radius: 4px; border: none;
+  background: var(--shopee); color: #fff; font-size: 14px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+
+/* ══════════════════════════════════
+   SCREEN 2 — EMPLOYEE DASHBOARD
+   ══════════════════════════════════ */
+.dash { background: var(--white); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.d-hdr {
+  background: var(--bg); border-bottom: 1px solid var(--border);
+  padding: 14px 20px; display: flex; align-items: center;
+  justify-content: space-between; flex-wrap: wrap; gap: 8px;
+}
+.d-hdr h2 { font-size: 15px; font-weight: 600; }
+.d-hdr .ref { font-weight: 400; color: var(--hint); }
+.d-pill {
+  font-size: 11.5px; font-weight: 600; padding: 3px 10px;
+  border-radius: 3px; background: var(--amber-bg); color: var(--amber);
+}
+.d-body { padding: 20px; }
+
+.sec-lbl {
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: .4px; color: var(--muted); margin-bottom: 8px; margin-top: 20px;
+}
+.sec-lbl:first-child { margin-top: 0; }
+
+/* info grid */
+.info-g { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-top: 4px; }
+.info-g .k { font-size: 11px; color: var(--hint); font-weight: 600; text-transform: uppercase; letter-spacing: .3px; }
+.info-g .v { font-size: 13px; color: var(--text); margin-top: 1px; }
+
+/* comparison */
+.cmp {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+  border: 1px solid var(--border); border-radius: 4px; overflow: hidden;
+  position: relative;
+}
+.cmp .col { padding: 14px 16px; }
+.cmp .col + .col { border-left: 1px solid var(--border); }
+.cmp .c-hd {
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: .3px; color: var(--hint); margin-bottom: 6px;
+}
+.cmp .c-bd { font-size: 13px; color: var(--text); line-height: 1.6; }
+.cmp .col.err { background: #fafafa; }
+.cmp .col.err .c-bd { color: var(--red); }
+.err-dot {
+  display: inline-block; width: 8px; height: 8px;
+  border-radius: 50%; background: var(--red); margin-right: 4px; vertical-align: 1px;
+}
+
+/* evidence panels */
+.ev-panel {
+  border: 1px solid var(--border); border-radius: 4px;
+  padding: 12px 16px; margin-top: 8px; font-size: 13px;
+  color: var(--text); line-height: 1.6;
+}
+.ev-panel .ep-lbl {
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: .3px; color: var(--hint); margin-bottom: 4px;
+}
+.ev-panel.pending { background: #fafafa; }
+.ev-panel .pending-text { color: var(--muted); font-style: italic; }
+
+/* AI recommendation */
+.rec {
+  border: 1px solid var(--border); border-radius: 4px;
+  padding: 12px 16px; margin-top: 8px; background: var(--bg);
+}
+.rec .r-lbl {
+  font-size: 11px; font-weight: 600; text-transform: uppercase;
+  letter-spacing: .3px; color: var(--hint); margin-bottom: 4px;
+}
+.rec .r-txt { font-size: 13px; color: var(--text); line-height: 1.6; }
+.rec .r-reason {
+  margin-top: 6px; font-size: 12px; color: var(--hint);
+  font-style: italic; line-height: 1.5;
+}
+
+/* timeline */
+.tl { margin-top: 8px; font-size: 12.5px; color: var(--secondary); }
+.tl-row { display: flex; gap: 10px; padding: 4px 0; align-items: flex-start; }
+.tl-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); margin-top: 4px; flex-shrink: 0; }
+.tl-dot.done { background: var(--green); }
+.tl-dot.now { background: var(--shopee); }
+.tl-t { color: var(--muted); font-size: 11px; width: 40px; flex-shrink: 0; }
+
+/* review btns */
+.rv-acts {
+  display: flex; gap: 8px; margin-top: 20px; padding-top: 16px;
+  border-top: 1px solid var(--divider); flex-wrap: wrap;
+}
+.rv-acts button {
+  padding: 9px 18px; border-radius: 4px; font: inherit;
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  border: 1px solid var(--border); background: var(--white);
+  color: var(--text); transition: all .15s;
+}
+.rv-acts button:hover { opacity: .85; }
+.rv-acts button.g { background: var(--green); color: #fff; border-color: var(--green); }
+.rv-acts button.r { background: var(--white); color: var(--red); border-color: var(--red); }
+.rv-acts button.a { background: var(--white); color: var(--amber); border-color: var(--amber); }
+.rv-acts button.b { background: var(--white); color: var(--blue); border-color: var(--blue); }
+
+/* ── HAX markers ── */
+.hx {
+  position: absolute;
+  display: inline-flex; align-items: center; gap: 2px;
+  background: #c62828; color: #fff;
+  font-size: 9px; font-weight: 700;
+  padding: 2px 5px; border-radius: 2px;
+  z-index: 20; pointer-events: none; white-space: nowrap;
+  transition: opacity .2s, transform .2s;
+}
+.hx-i {
+  display: inline-flex; align-items: center; gap: 2px;
+  background: #c62828; color: #fff;
+  font-size: 9px; font-weight: 700;
+  padding: 2px 5px; border-radius: 2px;
+  pointer-events: none; white-space: nowrap;
+  margin-left: 6px; vertical-align: middle;
+  transition: opacity .2s, transform .2s;
+}
+.hide-hx .hx, .hide-hx .hx-i {
+  opacity: 0 !important; transform: scale(0) !important;
+  width: 0; padding: 0; margin: 0; overflow: hidden;
+}
+
+/* ── Footer ── */
+.ft { max-width: 920px; width: 100%; margin-top: 24px; text-align: center; font-size: 11px; color: var(--muted); }
+
+/* ── Modals ── */
+.m-bg {
+  position: fixed; inset: 0; background: rgba(0,0,0,.3);
+  display: none; align-items: center; justify-content: center; z-index: 100;
+}
+.m-bg.show { display: flex; }
+.m-card { background: #fff; border-radius: 6px; padding: 20px; max-width: 340px; width: 90%; }
+.m-card h3 { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+.m-card p { font-size: 13px; color: var(--secondary); line-height: 1.6; margin-bottom: 14px; }
+.m-f { display: flex; gap: 8px; justify-content: flex-end; }
+.m-f button {
+  padding: 7px 16px; border-radius: 4px; font: inherit; font-size: 13px;
+  cursor: pointer; border: 1px solid var(--border); background: var(--white); color: var(--secondary);
+}
+.m-f button.p { background: var(--shopee); color: #fff; border-color: var(--shopee); }
+.m-f button:hover { opacity: .85; }
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<div class="hdr">
+  <h1>T4 — Trợ lý khiếu nại "hàng không đúng mô tả"</h1>
+  <div class="sub">Nhóm Soopi · K5-L3A-Day05 · Kịch bản đắt nhất: Shop sửa mô tả sau bán, hệ thống không truy xuất được mô tả gốc</div>
+  <div class="bar">
+    <div class="tabs">
+      <button class="on" onclick="sw(1,this)">Màn hình người mua</button>
+      <button onclick="sw(2,this)">Dashboard nhân viên</button>
+    </div>
+    <label class="tog">
+      <input type="checkbox" id="hxT" checked onchange="th()"> Hiện chú thích HAX/PAIR
+    </label>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCREEN 1 — BUYER CHAT
+     ══════════════════════════════════════ -->
+<div class="scr on" id="s1">
+<div class="phone" id="frame1">
+
+  <div class="p-bar"><b>14:35</b><span>4G &nbsp; 82%</span></div>
+  <div class="c-hdr">
+    <span class="bk">‹</span>
+    <div class="av">S</div>
+    <div style="flex:1">
+      <div class="nm">Trò chuyện với Shopee</div>
+      <div class="st">Trợ lý AI đang hoạt động</div>
+    </div>
+  </div>
+
+  <div class="c-body">
+
+    <div class="sys"><em>Trợ lý AI Shopee</em></div>
+    <div class="sys">12/11/2026 · 14:32</div>
+
+    <!-- AI greeting -->
+    <div class="row a">
+      <div class="av">S</div>
+      <div class="bbl">
+        <div class="tag">Trợ lý Shopee <span class="lb">AI</span></div>
+        Chào bạn, mình là Trợ lý tự động hỗ trợ khiếu nại của Shopee. Bạn cần hỗ trợ về đơn hàng nào?
+        <div class="ts">14:32</div>
+      </div>
+    </div>
+
+    <!-- User complaint -->
+    <div class="row u">
+      <div class="av">K</div>
+      <div class="bbl">
+        Lúc tôi đặt hàng shop ghi áo cotton 100%, nhưng bây giờ shop đã sửa thành vải pha. Tôi muốn trả hàng hoàn tiền.
+        <div class="ts">14:33</div>
+      </div>
+    </div>
+
+    <!-- AI response -->
+    <div class="row a" style="position:relative">
+      <div class="av">S</div>
+      <div class="bbl">
+        <div class="tag">Trợ lý Shopee <span class="lb">AI</span></div>
+
+        <!-- Confidence badge -->
+        <div style="margin-bottom:6px">
+          <span class="conf">⚠️ Chưa đủ căn cứ</span>
+        </div>
+
+        <!-- Main AI response — HAX G10, G11 -->
+        <div style="font-size:13px;color:var(--text);line-height:1.65;position:relative">
+          Mình đã ghi nhận khiếu nại của bạn về việc mô tả chất liệu sản phẩm có sự khác biệt. Tuy nhiên, hiện tại mình chưa truy xuất được bản mô tả sản phẩm tại thời điểm bạn đặt hàng.<br><br>
+          Vì vậy, mình chưa thể kết luận shop giao hàng sai mô tả hay không. Mình sẽ chuyển hồ sơ cho nhân viên kiểm tra lịch sử mô tả và bằng chứng của hai bên.<br><br>
+          Trong thời gian này, khiếu nại chưa bị đóng và chưa có quyết định hoàn tiền.
+          <div class="hx" style="top:-4px;right:-8px">G10 · G11</div>
+        </div>
+
+        <!-- Bằng chứng đã nhận -->
+        <div class="ev-section" style="margin-top:10px">
+          <div class="ev-hdr">Bằng chứng đã nhận</div>
+          <div class="ev-item"><div class="dot ok"></div><div>Mô tả hiện tại của sản phẩm: "Chất liệu: Vải pha cotton/polyester"</div></div>
+          <div class="ev-item"><div class="dot ok"></div><div>Nội dung khiếu nại của người mua: ghi nhận lúc đặt hàng mô tả là "Cotton 100%"</div></div>
+        </div>
+
+        <!-- Bằng chứng còn thiếu -->
+        <div class="ev-section">
+          <div class="ev-hdr missing">Bằng chứng còn thiếu</div>
+          <div class="ev-item"><div class="dot no"></div><div>Bản lưu mô tả sản phẩm tại thời điểm đặt hàng (07/11/2026)</div></div>
+        </div>
+
+        <!-- Transfer notice — PAIR Errors + Graceful Failure -->
+        <div class="transfer-notice">
+          <span style="flex-shrink:0">→</span>
+          <span>Hồ sơ đang được chuyển cho nhân viên xử lý khiếu nại. Bạn sẽ nhận thông báo khi có kết quả.</span>
+          <div class="hx" style="top:-6px;right:-6px">PAIR: Graceful Failure</div>
+        </div>
+
+        <!-- Action buttons -->
+        <div class="acts">
+          <button class="pri" onclick="om('mFile')">
+            <span class="ic">◎</span><span class="la">Xem hồ sơ khiếu nại</span><span class="ar">›</span>
+          </button>
+          <button onclick="om('mEvidence')">
+            <span class="ic">↑</span><span class="la">Bổ sung bằng chứng</span><span class="ar">›</span>
+          </button>
+          <button onclick="om('mAgent')" style="position:relative">
+            <span class="ic">→</span><span class="la">Liên hệ nhân viên</span><span class="ar">›</span>
+            <div class="hx" style="top:-6px;right:-6px">G8</div>
+          </button>
+        </div>
+
+        <div class="ts">14:34</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="ibar">
+    <input type="text" placeholder="Nhập tin nhắn...">
+    <button class="snd">➤</button>
+  </div>
+
+</div>
+</div>
+
+<!-- ══════════════════════════════════════
+     SCREEN 2 — EMPLOYEE DASHBOARD
+     ══════════════════════════════════════ -->
+<div class="scr" id="s2">
+<div class="dash" id="frame2">
+
+  <div class="d-hdr">
+    <h2>Khiếu nại <span class="ref">#REF-8899</span></h2>
+    <span class="d-pill">Đang chờ xác minh</span>
+  </div>
+
+  <div class="d-body">
+
+    <!-- Order info -->
+    <div class="sec-lbl" style="margin-top:0">Thông tin đơn hàng</div>
+    <div class="info-g">
+      <div><div class="k">Mã đơn</div><div class="v">#241107-AK5532</div></div>
+      <div><div class="k">Sản phẩm</div><div class="v">Áo thun nam basic — ThờiTrang.vn</div></div>
+      <div><div class="k">Người mua</div><div class="v">buyer_hcm_***82</div></div>
+      <div><div class="k">Ngày đặt</div><div class="v">07/11/2026 — 09:15</div></div>
+      <div><div class="k">Trạng thái phê duyệt</div><div class="v" style="color:var(--amber);font-weight:600">Đang chờ xác minh</div></div>
+      <div><div class="k">Nguồn chuyển</div><div class="v">Trợ lý AI (tự động)</div></div>
+    </div>
+
+    <!-- Comparison — PAIR Explainability + Trust -->
+    <div class="sec-lbl" style="display:inline-flex;align-items:center">
+      So sánh mô tả sản phẩm
+      <span class="hx-i">PAIR: Explainability + Trust</span>
+    </div>
+    <div class="cmp">
+      <div class="col">
+        <div class="c-hd">Mô tả hiện tại</div>
+        <div class="c-bd">
+          Chất liệu: Vải pha cotton/polyester<br>
+          Size: M, L, XL<br>
+          Màu: Trắng, Đen, Xám<br><br>
+          <span style="font-size:11.5px;color:var(--hint)">Cập nhật lần cuối: 10/11/2026, 22:41</span>
+        </div>
+      </div>
+      <div class="col err">
+        <div class="c-hd">Mô tả tại thời điểm đặt hàng</div>
+        <div class="c-bd">
+          <span class="err-dot"></span>Không truy xuất được dữ liệu<br><br>
+          <span style="font-size:11.5px;color:var(--hint);font-style:italic">Hệ thống không lưu bản snapshot mô tả cho đơn hàng này. Cần kiểm tra log nội bộ.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Buyer evidence -->
+    <div class="sec-lbl">Bằng chứng người mua</div>
+    <div class="ev-panel">
+      <div class="ep-lbl">Nội dung khiếu nại</div>
+      "Lúc tôi đặt hàng shop ghi áo cotton 100%, nhưng bây giờ shop đã sửa thành vải pha. Tôi muốn trả hàng hoàn tiền."
+      <div style="margin-top:6px;font-size:12px;color:var(--hint)">Gửi lúc: 12/11/2026, 14:33 · Kèm: không có ảnh/video</div>
+    </div>
+
+    <!-- Seller response -->
+    <div class="sec-lbl">Phản hồi người bán</div>
+    <div class="ev-panel pending">
+      <div class="ep-lbl">Trạng thái</div>
+      <span class="pending-text">Chưa nhận được phản hồi. Hạn phản hồi: 24 giờ (đến 14:34 ngày 13/11/2026).</span>
+    </div>
+
+    <!-- AI recommendation -->
+    <div class="sec-lbl">Đề xuất của AI</div>
+    <div class="rec">
+      <div class="r-lbl">Hành động đề xuất</div>
+      <div class="r-txt">Tạm dừng tự động hoàn tiền. Chuyển hồ sơ cho nhân viên kiểm tra log hệ thống nội bộ để xác minh lịch sử chỉnh sửa mô tả sản phẩm.</div>
+      <div class="r-reason">Lý do: Hệ thống chưa truy xuất được bản lưu mô tả tại thời điểm đặt hàng. Chưa đủ căn cứ để xác định mô tả có bị thay đổi sau bán hay không.</div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="sec-lbl">Diễn biến xử lý</div>
+    <div class="tl">
+      <div class="tl-row"><div class="tl-dot done"></div><div class="tl-t">14:33</div><div>Người mua gửi khiếu nại: mô tả ghi cotton 100% nhưng shop đã sửa thành vải pha.</div></div>
+      <div class="tl-row"><div class="tl-dot done"></div><div class="tl-t">14:34</div><div>AI đối chiếu mô tả → không truy xuất được bản lưu gốc.</div></div>
+      <div class="tl-row"><div class="tl-dot done"></div><div class="tl-t">14:34</div><div>AI tạm dừng hoàn tiền tự động, gửi thông báo cho người mua.</div></div>
+      <div class="tl-row"><div class="tl-dot now"></div><div class="tl-t">14:34</div><div>Chuyển hồ sơ cho nhân viên. Chờ xác minh log chỉnh sửa.</div></div>
+    </div>
+
+    <!-- Review actions -->
+    <div class="rv-acts">
+      <button class="g" onclick="om('mApprove')">Duyệt hoàn tiền</button>
+      <button class="r" onclick="om('mReject')">Từ chối khiếu nại</button>
+      <button class="a" onclick="om('mMore')">Yêu cầu bổ sung bằng chứng</button>
+      <button class="b" onclick="om('mEscalate')">Chuyển cấp xử lý</button>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<!-- ══ MODALS ══ -->
+<div class="m-bg" id="mFile">
+  <div class="m-card">
+    <h3>Hồ sơ khiếu nại</h3>
+    <p>Mã khiếu nại: #REF-8899<br>Đơn hàng: #241107-AK5532<br>Sản phẩm: Áo thun nam basic<br>Trạng thái: Đang chờ xác minh<br><br>Khiếu nại chưa bị đóng. Chưa có quyết định hoàn tiền.</p>
+    <div class="m-f"><button onclick="cm()">Đóng</button></div>
+  </div>
+</div>
+
+<div class="m-bg" id="mEvidence">
+  <div class="m-card">
+    <h3>Bổ sung bằng chứng</h3>
+    <p>Nếu bạn có ảnh chụp màn hình mô tả sản phẩm lúc đặt hàng, ảnh tem mác, hoặc đoạn chat với shop, hãy tải lên để hỗ trợ quá trình xác minh.<br><br>Bằng chứng sẽ được chuyển cho nhân viên xử lý.</p>
+    <div class="m-f"><button onclick="cm()">Đóng</button><button class="p" onclick="cm()">Chọn ảnh</button></div>
+  </div>
+</div>
+
+<div class="m-bg" id="mAgent">
+  <div class="m-card">
+    <h3>Liên hệ nhân viên</h3>
+    <p>Trợ lý AI sẽ gửi toàn bộ thông tin khiếu nại cho nhân viên xử lý. Bạn không cần kể lại từ đầu.<br><br>Thời gian chờ ước tính: ~3 phút.</p>
+    <div class="m-f"><button onclick="cm()">Ở lại</button><button class="p" onclick="cm()">Gặp nhân viên</button></div>
+  </div>
+</div>
+
+<div class="m-bg" id="mApprove">
+  <div class="m-card">
+    <h3>Xác nhận duyệt hoàn tiền</h3>
+    <p>Đơn #241107-AK5532 — Áo thun nam basic<br><br>Hành động này sẽ chuyển tiền về cho người mua. Không thể hoàn tác tự động sau khi duyệt.<br><br>Bạn đã xác minh log chỉnh sửa mô tả chưa?</p>
+    <div class="m-f"><button onclick="cm()">Huỷ</button><button class="p" style="background:var(--green);border-color:var(--green)" onclick="cm()">Xác nhận hoàn tiền</button></div>
+  </div>
+</div>
+
+<div class="m-bg" id="mReject">
+  <div class="m-card">
+    <h3>Xác nhận từ chối khiếu nại</h3>
+    <p>Tiền sẽ được giữ cho người bán. Người mua sẽ nhận thông báo kèm lý do từ chối.<br><br>Vui lòng đảm bảo đã có đủ căn cứ trước khi từ chối.</p>
+    <div class="m-f"><button onclick="cm()">Huỷ</button><button class="p" style="background:var(--red);border-color:var(--red)" onclick="cm()">Từ chối</button></div>
+  </div>
+</div>
+
+<div class="m-bg" id="mMore">
+  <div class="m-card">
+    <h3>Yêu cầu bổ sung bằng chứng</h3>
+    <p>Gửi yêu cầu cho người mua bổ sung ảnh chụp màn hình mô tả lúc đặt hàng hoặc bằng chứng khác.<br><br>Thời hạn bổ sung: 48 giờ.</p>
+    <div class="m-f"><button onclick="cm()">Huỷ</button><button class="p" style="background:var(--amber);border-color:var(--amber)" onclick="cm()">Gửi yêu cầu</button></div>
+  </div>
+</div>
+
+<div class="m-bg" id="mEscalate">
+  <div class="m-card">
+    <h3>Chuyển cấp xử lý</h3>
+    <p>Hồ sơ sẽ được chuyển lên trưởng nhóm hoặc bộ phận kiểm định. Hành động này dành cho các trường hợp phức tạp vượt thẩm quyền xử lý.</p>
+    <div class="m-f"><button onclick="cm()">Huỷ</button><button class="p" style="background:var(--blue);border-color:var(--blue)" onclick="cm()">Chuyển cấp</button></div>
+  </div>
+</div>
+
+<div class="ft">Prototype dựng cho bài Lab5 · Dữ liệu dựng, không phải sản phẩm thật · Nhóm Soopi · K5-L3A-Day05-T4</div>
+
+<script>
+function sw(n, b) {
+  document.querySelectorAll('.scr').forEach(s => s.classList.remove('on'));
+  document.getElementById('s' + n).classList.add('on');
+  document.querySelectorAll('.tabs button').forEach(x => x.classList.remove('on'));
+  b.classList.add('on');
+}
+function th() {
+  var on = document.getElementById('hxT').checked;
+  document.getElementById('frame1').classList.toggle('hide-hx', !on);
+  document.getElementById('frame2').classList.toggle('hide-hx', !on);
+}
+function om(id) { document.getElementById(id).classList.add('show'); }
+function cm() { document.querySelectorAll('.m-bg').forEach(m => m.classList.remove('show')); }
+document.querySelectorAll('.m-bg').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) cm(); });
+});
+</script>
+</body>
+</html>
