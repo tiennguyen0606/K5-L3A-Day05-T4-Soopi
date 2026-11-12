@@ -35,6 +35,7 @@
     - Người bán có thể được hưởng lợi từ việc sửa mô tả sau bán.
     - Nếu đóng khiếu nại, việc khôi phục quyền lợi có thể phức tạp.
 
+
     + Kịch bản đắt nhất số 2: Người bán thực tế đúng nhưng AI hoàn tiền
 
     Lý do:
@@ -42,6 +43,7 @@
     - Quyết định hoàn tiền khó đảo ngược.
     - AI có thể bị chi phối bởi lời khiếu nại một phía.
     - Làm mất niềm tin của người bán vào tính công bằng của sàn.
+
 
     + Kịch bản suýt được chọn: Kịch bản người mua đe dọa bóc phốt.
 
