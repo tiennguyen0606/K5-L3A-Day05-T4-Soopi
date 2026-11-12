@@ -1,7 +1,7 @@
 # Bài nộp LAB5 — T4 Thương mại điện tử · Nhóm Soopi
 
 - Lớp: 3A - H210
-- Bàn/Zone: 
+- Bàn/Zone: Hàng 1/ Màn 3
 - Track: T4 - Thương mại điện tử
 
 | Họ và tên       | Mã Học Viên | Việc đã làm                                                                                                                                                                                   |
