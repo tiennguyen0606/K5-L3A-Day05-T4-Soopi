@@ -27,16 +27,15 @@
 |10|Tôi gửi ảnh rồi mà sao cứ bắt gửi lại?|② Mơ hồ / thiếu thông tin|AI không kiểm tra lịch sử hồ sơ và tiếp tục gọi `yeu_cau_bang_chung`, khiến người mua phải gửi đi gửi lại.||Hiển thị những bằng chứng đã nhận, chỉ rõ bằng chứng nào đã đủ và còn thiếu gì. Nếu không thiếu thì không yêu cầu gửi lại.|Sửa được|
 - Bằng chứng: cột "AI có thể sai thế nào" trỏ về một tool hoặc một dòng dữ liệu của track (hoặc chỗ dữ liệu không có).
 - Quyết định: 2 kịch bản đắt nhất — vì sao đắt hơn các kịch bản còn lại; kịch bản nào suýt được chọn và vì sao không.
-    + Kịch bản đắt nhất số 1: Người bán sửa mô tả sau khi bán
++ Kịch bản đắt nhất số 1: Người bán sửa mô tả sau khi bán
 
     Lý do:
     - AI có thể sử dụng dữ liệu hiện tại thay vì dữ liệu lịch sử.
     - Người mua có thể bị từ chối quyền lợi dù khiếu nại hợp lệ.
     - Người bán có thể được hưởng lợi từ việc sửa mô tả sau bán.
     - Nếu đóng khiếu nại, việc khôi phục quyền lợi có thể phức tạp.
-
-
-    + Kịch bản đắt nhất số 2: Người bán thực tế đúng nhưng AI hoàn tiền
+    
++ Kịch bản đắt nhất số 2: Người bán thực tế đúng nhưng AI hoàn tiền
 
     Lý do:
     - Người bán bị mất tiền và có thể mất cả hàng.
@@ -45,7 +44,7 @@
     - Làm mất niềm tin của người bán vào tính công bằng của sàn.
 
 
-    + Kịch bản suýt được chọn: Kịch bản người mua đe dọa bóc phốt.
++ Kịch bản suýt được chọn: Kịch bản người mua đe dọa bóc phốt.
 
     Lý do không chọn:
     - Lời đe dọa có thể gây áp lực nhưng vẫn có thể được xử lý
