@@ -11,6 +11,8 @@
 
 ## §2. Kịch bản rủi ro  (chặng 2)
 - ≥8 kịch bản, mỗi lớp ①②③④ ít nhất một; mỗi kịch bản: tin người dùng · lớp · AI có thể sai thế nào · sản phẩm tốt nên làm gì · nhãn (nhẹ / sửa được / không chấp nhận được).
+
+
 | Kịch bản| Tin người dùng| Lớp| AI có thể sai như thế nào| Bằng chứng| Sản phẩm tốt nên làm gì| Nhãn|
 |---|---|---|---|---|---|---|
 | 1 | Lúc tôi mua shop ghi áo cotton 100%, giờ vào xem lại thì shop sửa thành vải pha. Tôi muốn trả hàng.| ① Nguồn sự thật| AI sử dụng mô tả sản phẩm hiện tại thay vì mô tả tại thời điểm đặt hàng. Dẫn đến kết luận người bán không vi phạm và từ chối khiếu nại.| Track yêu cầu so sánh với mô tả lúc đặt hàng, nhưng bộ dữ liệu không cung cấp bản lưu lịch sử mô tả tại thời điểm mua| Không sử dụng mô tả hiện tại để kết luận. Yêu cầu truy xuất bản lưu mô tả tại thời điểm đặt hàng. Nếu không có dữ liệu, chuyển nhân viên xác minh.| Khống chấp nhận được|
